@@ -1,35 +1,21 @@
 import { DealsListGame, StoreFromShark } from "../../globalTypes";
-import { Text, View, FlatList } from "react-native";
-import { useState, useEffect } from "react";
+import {
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  Image,
+  Linking,
+  Alert,
+  Pressable,
+} from "react-native";
+import { useState, useEffect, useCallback } from "react";
+import { theme } from "../../theme";
 
 // import FreeGames from "@/components/root/freeGames";
 // import getStores from "@/lib/getStores";
 // import ListOfDeals from "@/components/listOfDeals";
 // import UserDeals from "../components/auth/userDeals";
-
-// to assure for production is at least one free game
-const freeGameForProd: DealsListGame = {
-  internalName: "JUSTCAUSE2",
-  title: "Just Cause 2",
-  metacriticLink: "/game/pc/just-cause-2",
-  dealID: "n4VivWiz9xVo54bIegFI2S0MZGlMViNEL%2B4QMfk9zW4%3D",
-  storeID: "3",
-  gameID: "180",
-  salePrice: "1.50",
-  normalPrice: "14.99",
-  isOnSale: "1",
-  savings: "89.993329",
-  metacriticScore: "84",
-  steamRatingText: "Very Positive",
-  steamRatingPercent: "90",
-  steamRatingCount: "38792",
-  steamAppID: "8190",
-  releaseDate: 1269302400,
-  lastChange: 1679567745,
-  dealRating: "9.8",
-  thumb:
-    "https://cdn.cloudflare.steamstatic.com/steam/apps/8190/capsule_sm_120.jpg?t=1660140289",
-};
 
 // filter out deals that don't have steamAppID and are not free
 // and prevent repetitions of games (common with this API)
@@ -100,41 +86,185 @@ export default function BestDeals() {
       } catch {}
     }
     fetchBestDeals(15);
+    getStores();
   }, []);
 
   //   let free = await fetchFreeGames();
   // get stores
   //   const stores = await getStores();
-  if (bestDeals != undefined) {
-    // for production extra cards with free games
-    // free = [...free, freeGameForProd, freeGameForProd];
+  // for production extra cards with free games
+  // free = [...free, freeGameForProd, freeGameForProd];
+  if (bestDeals.length > 0 && stores.length > 0) {
     return (
       <View>
         <Text>Best Deals</Text>
-        {bestDeals.length > 0 && stores.length > 0 ? (
+        <View style={[styles.table]}>
+          <View style={[styles.row]}>
+            <View style={[styles.cell0]}>
+              <Text style={[styles.header]}>Store</Text>
+            </View>
+            <View style={[styles.cell1]}>
+              <Text style={[styles.header]}>Cover</Text>
+            </View>
+            <View style={[styles.cell2]}>
+              <Text style={[styles.header]}>Title</Text>
+            </View>
+            <View style={[styles.cell3]}>
+              <Text style={[styles.header]}>Price</Text>
+            </View>
+            <View style={[styles.cell4]}>
+              <Text style={[styles.header]}>Save</Text>
+            </View>
+            <View style={[styles.cell5]}>
+              <Text style={[styles.header]}>Deal</Text>
+            </View>
+          </View>
           <FlatList
             data={bestDeals}
             keyExtractor={(deal) => deal.dealID}
-            renderItem={({ item }) => (
-              <View>
-                <Text>{item.title}</Text>
-              </View>
-            )}
+            renderItem={({ item }) => <Deal deal={item} stores={stores} />}
           />
-        ) : null}
-        {bestDeals.map((deal) => {
-          return (
-            <View>
-              <Text>{deal.title}</Text>
-            </View>
-          );
-        })}
+        </View>
       </View>
     );
   }
   return (
     <View>
-      <Text>Cheap Shark unavailable</Text>
+      <Text>LOADING</Text>
     </View>
   );
 }
+
+function Deal({
+  deal,
+  stores,
+}: {
+  deal: DealsListGame;
+  stores: StoreFromShark[];
+}) {
+  const url = `https://www.cheapshark.com/redirect?dealID=${deal.dealID}`;
+  const handlePress = useCallback(async () => {
+    // Checking if the link is supported for links with custom URL scheme.
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+      // by some browser in the mobile
+      await Linking.openURL(url);
+    } else {
+      Alert.alert(`Don't know how to open this URL: ${url}`);
+    }
+  }, [url]);
+  return (
+    <View style={[styles.row]}>
+      <View style={[styles.cell0]}>
+        <Image
+          style={[styles.cell0Img]}
+          source={{
+            uri: `https://www.cheapshark.com/${
+              stores[+deal.storeID - 1].images.logo
+            }`,
+          }}
+        />
+      </View>
+      <View style={[styles.cell1]}>
+        {deal.steamAppID !== null ? (
+          <Image source={{ uri: deal.thumb }} style={[styles.cell1ImgWide]} />
+        ) : (
+          <Image source={{ uri: deal.thumb }} style={[styles.cell1ImgHigh]} />
+        )}
+      </View>
+      <View style={[styles.cell2]}>
+        <Text style={[styles.cell2]}>{deal.title}</Text>
+      </View>
+      <View style={[styles.cell3]}>
+        <Text style={[styles.cell3]}>{deal.salePrice}$</Text>
+      </View>
+      <View style={[styles.cell4]}>
+        <Text style={[styles.cell4]}>{Math.floor(+deal.savings)}%</Text>
+      </View>
+      <View style={[styles.cell5]}>
+        <Pressable onPress={handlePress} style={[styles.cell5]}>
+          <Text style={[styles.cell5]}>Go to!</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  table: {
+    padding: 1,
+    borderColor: theme.red,
+    borderWidth: 2,
+    backgroundColor: theme.night,
+    borderTopWidth: 0,
+  },
+  row: {
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "space-around",
+    flexDirection: "row",
+    textAlign: "center",
+    paddingVertical: 5,
+    borderTopColor: theme.red,
+    borderWidth: 2,
+    backgroundColor: theme.night,
+  },
+  header: {
+    color: theme.white,
+    textAlign: "center",
+    fontSize: 11,
+  },
+  cell0: {
+    width: 30,
+    textAlign: "center",
+    fontSize: 10,
+    color: theme.white,
+  },
+  cell0Img: {
+    height: 30,
+    width: 30,
+  },
+  cell1: {
+    width: 90,
+    color: theme.white,
+    textAlign: "center",
+    fontSize: 10,
+  },
+  cell1ImgHigh: {
+    height: 30,
+    width: 22,
+  },
+  cell1ImgWide: {
+    height: 30,
+    width: 90,
+  },
+  cell2: {
+    width: 120,
+    textAlign: "center",
+    fontSize: 10,
+    color: theme.white,
+  },
+  cell3: {
+    width: 50,
+    textAlign: "center",
+    fontSize: 12,
+    color: theme.white,
+  },
+  cell4: {
+    width: 50,
+    textAlign: "center",
+    fontSize: 12,
+    color: theme.white,
+  },
+  cell5: {
+    width: 50,
+    textAlign: "center",
+    fontSize: 12,
+    textDecorationStyle: "solid",
+    textDecorationColor: theme.white,
+    textDecorationLine: "underline",
+    color: theme.white,
+  },
+});
