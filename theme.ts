@@ -10,7 +10,7 @@ import { StyleSheet } from "react-native";
 export const generalStyles = StyleSheet.create({
   headerForSection: {
     fontSize: 20,
-    marginBottom: 5,
+    marginBottom: 10,
     marginLeft: 2,
     fontFamily: "Orienta",
     color: theme.white,

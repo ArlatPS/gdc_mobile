@@ -1,21 +1,13 @@
 import { DealsListGame, StoreFromShark } from "../../globalTypes";
 import { generalStyles, theme } from "../../theme";
-import {
-  Text,
-  View,
-  FlatList,
-  StyleSheet,
-  Image,
-  Linking,
-  Alert,
-  Pressable,
-} from "react-native";
+import { Text, View, StyleSheet, Image, Pressable } from "react-native";
 import { useState, useEffect, useMemo } from "react";
 import {
   CalculateTimeLeftType,
   calculateTimeLeft,
   getStoreToDisplay,
 } from "../../lib/freeGamesFunctions";
+import { useNavigation } from "@react-navigation/native";
 
 export default function FreeGames({ stores }: { stores: StoreFromShark[] }) {
   const [freeGames, setFreeGames] = useState<DealsListGame[]>([]);
@@ -58,8 +50,13 @@ function FreeGame({
   const timeLeft: CalculateTimeLeftType = useMemo(() => {
     return calculateTimeLeft(game.lastChange);
   }, [game.lastChange]);
+  // type it
+  const navigate = useNavigation() as any;
   return (
-    <View style={[styles.freeGameCard]}>
+    <Pressable
+      style={[styles.freeGameCard]}
+      onPress={() => navigate.navigate("Game Details", { id: game.gameID })}
+    >
       {gameStore ? (
         <View style={[styles.gameStore]}>
           <Image
@@ -132,7 +129,7 @@ function FreeGame({
           </View>
         )
       ) : null}
-    </View>
+    </Pressable>
   );
 }
 

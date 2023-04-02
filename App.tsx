@@ -6,6 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 
 import { View } from "react-native";
+import { StackNavigator } from "./navigation/stackNavigator";
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
@@ -28,7 +29,7 @@ export default function App() {
   return (
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <NavigationContainer>
-        <BottomTabsNavigator />
+        <StackNavigator />
         <StatusBar style="dark" />
       </NavigationContainer>
     </View>
