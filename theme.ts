@@ -11,6 +11,7 @@ export const generalStyles = StyleSheet.create({
   headerForSection: {
     fontSize: 20,
     marginBottom: 5,
+    marginLeft: 2,
     fontFamily: "Orienta",
     color: theme.white,
   },

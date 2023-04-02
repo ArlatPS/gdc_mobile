@@ -71,7 +71,7 @@ export default function BestDeals({ stores }: { stores: StoreFromShark[] }) {
       <View style={{ flex: 1 }}>
         <Text style={generalStyles.headerForSection}>Best Deals</Text>
         <View style={[styles.table]}>
-          <View style={[styles.row]}>
+          <View style={[styles.row, { borderTopWidth: 0 }]}>
             <View style={[styles.cell0]}>
               <Text style={[styles.header]}>Store</Text>
             </View>
@@ -180,11 +180,11 @@ function Deal({
 
 const styles = StyleSheet.create({
   table: {
-    padding: 1,
     borderColor: theme.red,
     borderWidth: 2,
     backgroundColor: theme.night,
-    borderTopWidth: 0,
+    marginHorizontal: 2,
+    borderRadius: 2,
   },
   row: {
     flexWrap: "nowrap",

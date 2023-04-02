@@ -123,8 +123,12 @@ function FreeGame({
           </View>
         ) : (
           <View style={styles.timeView}>
-            <Text>{timeLeft.value > 0 ? timeLeft.value : 0}</Text>
-            <Text>{timeLeft.value == 1 ? "hour" : "hours"} left</Text>
+            <Text style={[styles.redTime, { fontSize: 18 }]}>
+              {timeLeft.value > 0 ? timeLeft.value : 0}
+            </Text>
+            <Text style={[styles.redTime]}>
+              {timeLeft.value == 1 ? "hour" : "hours"} left
+            </Text>
           </View>
         )
       ) : null}
@@ -159,6 +163,11 @@ const styles = StyleSheet.create({
   },
   blueTime: {
     color: theme.blue,
+    textAlign: "center",
+    fontSize: 14,
+  },
+  redTime: {
+    color: theme.red,
     textAlign: "center",
     fontSize: 14,
   },
