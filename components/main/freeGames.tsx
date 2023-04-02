@@ -11,6 +11,11 @@ import {
   Pressable,
 } from "react-native";
 import { useState, useEffect, useMemo } from "react";
+import {
+  CalculateTimeLeftType,
+  calculateTimeLeft,
+  getStoreToDisplay,
+} from "../../lib/freeGamesFunctions";
 
 export default function FreeGames({ stores }: { stores: StoreFromShark[] }) {
   const [freeGames, setFreeGames] = useState<DealsListGame[]>([]);
@@ -64,7 +69,18 @@ function FreeGame({
             style={{ height: 30, aspectRatio: 1 }}
             alt="shop logo"
           />
-          <Text style={[{ color: theme.white }]}>{gameStore.storeName}</Text>
+          <Text
+            style={[
+              {
+                color: theme.white,
+                marginLeft: 10,
+                fontSize: 12,
+                fontFamily: "Prompt",
+              },
+            ]}
+          >
+            {gameStore.storeName}
+          </Text>
         </View>
       ) : null}
       {game.steamAppID !== null ? (
@@ -82,18 +98,31 @@ function FreeGame({
           style={[styles.coverImg]}
         />
       )}
-      <Text>{game.title}</Text>
+      <Text
+        style={{
+          color: theme.white,
+          textAlign: "center",
+          fontFamily: "Prompt",
+          fontSize: 14,
+          marginVertical: 6,
+        }}
+      >
+        {game.title}
+      </Text>
       {/* display time left if offer is from Epic - they last 7 days */}
-      {game.storeID === "25" ? (
-        // if days then div with days class otherwise hours
-        timeLeft.format === "days" ? (
-          <View>
-            <Text>{timeLeft.value}</Text>
+      {game.storeID == "25" ? (
+        timeLeft.format == "days" ? (
+          <View style={styles.timeView}>
+            <Text style={[styles.blueTime, { fontSize: 18 }]}>
+              {timeLeft.value}
+            </Text>
             {/* if one day then day otherwise days */}
-            <Text>{timeLeft.value == 1 ? "day" : "days"} left</Text>
+            <Text style={[styles.blueTime]}>
+              {timeLeft.value == 1 ? "day" : "days"} left
+            </Text>
           </View>
         ) : (
-          <View>
+          <View style={styles.timeView}>
             <Text>{timeLeft.value > 0 ? timeLeft.value : 0}</Text>
             <Text>{timeLeft.value == 1 ? "hour" : "hours"} left</Text>
           </View>
@@ -104,35 +133,33 @@ function FreeGame({
 }
 
 const styles = StyleSheet.create({
-  freeGameCard: { width: 200, marginHorizontal: "auto" },
-  coverImg: { height: 40, width: 80 },
-  gameStore: { backgroundColor: "red" },
+  freeGameCard: {
+    width: 202,
+    marginVertical: 10,
+    borderColor: theme.red,
+    borderWidth: 1,
+    borderRadius: 15,
+    backgroundColor: theme.night,
+    shadowColor: theme.red,
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 15,
+  },
+  coverImg: { height: 100, width: 200 },
+  gameStore: {
+    // backgroundColor: "red",
+    flexWrap: "nowrap",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+  },
+  timeView: {
+    padding: 10,
+  },
+  blueTime: {
+    color: theme.blue,
+    textAlign: "center",
+    fontSize: 14,
+  },
 });
-
-function getStoreToDisplay(game: DealsListGame, stores: StoreFromShark[]) {
-  let gameStoreToDisplay: StoreFromShark | undefined = undefined;
-  for (let i = 0; i < stores.length; i++) {
-    if (stores[i].storeID == game.storeID) {
-      gameStoreToDisplay = stores[i];
-    }
-  }
-  return gameStoreToDisplay;
-}
-
-type CalculateTimeLeftType = {
-  format: "hours" | "days";
-  value: number;
-};
-
-function calculateTimeLeft(
-  lastChange: number,
-  now: number = Date.now()
-): CalculateTimeLeftType {
-  const end = lastChange * 1000 + 7 * 24 * 60 * 60 * 1000;
-  const hoursEnd = Math.floor((end - now) / 1000 / 3600);
-
-  if (hoursEnd < 24) {
-    return { format: "hours", value: hoursEnd };
-  }
-  return { format: "days", value: Math.floor(hoursEnd / 24) };
-}
