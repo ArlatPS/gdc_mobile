@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import WebView from "react-native-webview";
 import { useState, useEffect, useCallback } from "react";
-import { theme } from "../../theme";
+import { generalStyles, theme } from "../../theme";
 
 // import FreeGames from "@/components/root/freeGames";
 // import getStores from "@/lib/getStores";
@@ -98,7 +98,7 @@ export default function BestDeals() {
   if (bestDeals.length > 0 && stores.length > 0) {
     return (
       <View style={{ flex: 1 }}>
-        <Text>Best Deals</Text>
+        <Text style={generalStyles.headerForSection}>Best Deals</Text>
         <View style={[styles.table]}>
           <View style={[styles.row]}>
             <View style={[styles.cell0]}>
@@ -178,17 +178,29 @@ function Deal({
         )}
       </View>
       <View style={[styles.cell2]}>
-        <Text style={[styles.cell2]}>{deal.title}</Text>
+        <Text style={[styles.cell2, generalStyles.prompt]}>{deal.title}</Text>
       </View>
       <View style={[styles.cell3]}>
-        <Text style={[styles.cell3]}>{deal.salePrice}$</Text>
+        {+deal.savings > 90 ? (
+          <Text
+            style={[styles.cell3, generalStyles.prompt, { color: theme.blue }]}
+          >
+            {deal.salePrice}$
+          </Text>
+        ) : (
+          <Text style={[styles.cell3, generalStyles.prompt]}>
+            {deal.salePrice}$
+          </Text>
+        )}
       </View>
       <View style={[styles.cell4]}>
-        <Text style={[styles.cell4]}>{Math.floor(+deal.savings)}%</Text>
+        <Text style={[styles.cell4, generalStyles.prompt]}>
+          {Math.floor(+deal.savings)}%
+        </Text>
       </View>
       <View style={[styles.cell5]}>
         <Pressable onPress={handlePress} style={[styles.cell5]}>
-          <Text style={[styles.cell5]}>Go to!</Text>
+          <Text style={[styles.cell5, generalStyles.prompt]}>Go to!</Text>
         </Pressable>
       </View>
     </View>
@@ -218,6 +230,7 @@ const styles = StyleSheet.create({
     color: theme.white,
     textAlign: "center",
     fontSize: 11,
+    fontFamily: "Prompt",
   },
   cell0: {
     width: 30,

@@ -5,3 +5,15 @@ export const theme = {
   blue: "#279AF1",
   white: "#F7F7FF",
 };
+
+import { StyleSheet } from "react-native";
+export const generalStyles = StyleSheet.create({
+  headerForSection: {
+    fontSize: 20,
+    marginBottom: 5,
+    fontFamily: "Orienta",
+  },
+  prompt: {
+    fontFamily: "Prompt",
+  },
+});

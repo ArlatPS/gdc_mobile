@@ -11,6 +11,8 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [fontsLoaded] = useFonts({
     SpaceMono: require("./assets/fonts/SpaceMono-Regular.ttf"),
+    Orienta: require("./assets/fonts/Orienta-Regular.ttf"),
+    Prompt: require("./assets/fonts/Prompt-Regular.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
