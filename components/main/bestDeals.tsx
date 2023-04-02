@@ -9,6 +9,7 @@ import {
   Alert,
   Pressable,
 } from "react-native";
+import WebView from "react-native-webview";
 import { useState, useEffect, useCallback } from "react";
 import { theme } from "../../theme";
 
@@ -96,7 +97,7 @@ export default function BestDeals() {
   // free = [...free, freeGameForProd, freeGameForProd];
   if (bestDeals.length > 0 && stores.length > 0) {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <Text>Best Deals</Text>
         <View style={[styles.table]}>
           <View style={[styles.row]}>
@@ -127,8 +128,12 @@ export default function BestDeals() {
     );
   }
   return (
-    <View>
-      <Text>LOADING</Text>
+    <View style={{ flex: 1 }}>
+      <WebView
+        source={{ uri: "https://embed.lottiefiles.com/animation/78811" }}
+        style={{ flex: 1 }}
+        originWhitelist={["*"]}
+      />
     </View>
   );
 }
