@@ -41,5 +41,5 @@ export default function NameEffect({ text }: { text: string }) {
 }
 
 const styles = StyleSheet.create({
-  text: { fontSize: 30, textAlign: "center" },
+  text: { fontSize: 30, textAlign: "center", fontFamily: "SpaceMono" },
 });
