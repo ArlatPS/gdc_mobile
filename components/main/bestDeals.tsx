@@ -119,11 +119,9 @@ export default function BestDeals() {
               <Text style={[styles.header]}>Deal</Text>
             </View>
           </View>
-          <FlatList
-            data={bestDeals}
-            keyExtractor={(deal) => deal.dealID}
-            renderItem={({ item }) => <Deal deal={item} stores={stores} />}
-          />
+          {bestDeals.map((deal) => (
+            <Deal deal={deal} key={deal.dealID} stores={stores} />
+          ))}
         </View>
       </View>
     );

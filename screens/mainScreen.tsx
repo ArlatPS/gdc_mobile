@@ -1,10 +1,10 @@
-import { Image, Text, View } from "react-native";
+import { Image, ScrollView, Text, View } from "react-native";
 import BestDeals from "../components/main/bestDeals";
 import WebView from "react-native-webview";
 
 export default function MainScreen() {
   return (
-    <View style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1 }}>
       <Text>GG</Text>
       <WebView
         source={{ uri: "https://embed.lottiefiles.com/animation/78811" }}
@@ -16,6 +16,6 @@ export default function MainScreen() {
         style={{ height: 50, aspectRatio: 1 }}
       />
       <BestDeals />
-    </View>
+    </ScrollView>
   );
 }
