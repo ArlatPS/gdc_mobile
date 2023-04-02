@@ -41,23 +41,8 @@ function filterDeals(deals: DealsListGame[]) {
   return readyToBeDisplayed;
 }
 
-// also fetch return free games (which can be repeated - offers from different stores)
-// async function fetchFreeGames() {
-//   try {
-//     const response = await fetch(
-//       `https://www.cheapshark.com/api/1.0/deals?pageSize=20&upperPrice=0`,
-//       { next: { revalidate: 10 * 60 } }
-//     );
-//     const responseJSON = (await response.json()) as DealsListGame[];
-//     return responseJSON;
-//   } catch {
-//     console.error("CHEAP SHARK API UNAVAILABLE");
-//   }
-// }
-
-export default function BestDeals() {
+export default function BestDeals({ stores }: { stores: StoreFromShark[] }) {
   const [bestDeals, setBestDeals] = useState<DealsListGame[]>([]);
-  const [stores, setStores] = useState<StoreFromShark[]>([]);
   //   const bestDeals = await fetchBestDeals(15);
   useEffect(() => {
     async function fetchBestDeals(length: number) {
@@ -77,24 +62,10 @@ export default function BestDeals() {
         setBestDeals(filteredDeals.slice(0, length));
       } catch {}
     }
-    async function getStores() {
-      try {
-        const response = await fetch(
-          "https://www.cheapshark.com/api/1.0/stores"
-        );
-        const responseJSON = (await response.json()) as StoreFromShark[];
-        setStores(responseJSON);
-      } catch {}
-    }
+
     fetchBestDeals(15);
-    getStores();
   }, []);
 
-  //   let free = await fetchFreeGames();
-  // get stores
-  //   const stores = await getStores();
-  // for production extra cards with free games
-  // free = [...free, freeGameForProd, freeGameForProd];
   if (bestDeals.length > 0 && stores.length > 0) {
     return (
       <View style={{ flex: 1 }}>
