@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { theme } from "../../theme";
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; //26
 
 // it will need Suspense with good fallback
@@ -35,11 +36,16 @@ export default function NameEffect({ text }: { text: string }) {
 
   return (
     <View style={{ flex: 1 }}>
-      <Text style={styles.text}>{textDisplayed}</Text>
+      <Text
+        style={{
+          fontSize: 30,
+          textAlign: "center",
+          fontFamily: "SpaceMono",
+          color: theme.white,
+        }}
+      >
+        {textDisplayed}
+      </Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  text: { fontSize: 30, textAlign: "center", fontFamily: "SpaceMono" },
-});

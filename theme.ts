@@ -12,6 +12,7 @@ export const generalStyles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 5,
     fontFamily: "Orienta",
+    color: theme.white,
   },
   prompt: {
     fontFamily: "Prompt",
